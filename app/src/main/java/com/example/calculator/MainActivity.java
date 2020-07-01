@@ -10,18 +10,22 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9,
-            buttonAdd, buttonSub, buttonDiv, buttonMulti, buttonEqual, buttonClear;
+            buttonAdd, buttonSub, buttonDiv, buttonMulti, buttonEqual, buttonClear, buttonMod;
 
-    double value1, value2, result;
+    double value1, value2;
     EditText screen;
 
     enum Calculation {
         ADDITION,
         SUBTRACTION,
         MULTIPLICATION,
-        DIVISION
+        DIVISION,
+        MODULO,
+        NOTSELECTED,
+        ERROR
     }
-    Calculation calc;
+
+    Calculation calc = Calculation.NOTSELECTED;
 
 
     @Override
@@ -46,77 +50,81 @@ public class MainActivity extends AppCompatActivity {
         buttonDiv = (Button) findViewById(R.id.buttonDiv);
         buttonEqual = (Button) findViewById(R.id.buttonEqual);
         buttonClear = (Button) findViewById(R.id.buttonClear);
+        buttonMod = (Button) findViewById(R.id.buttonMod);
 
 
         screen = (EditText) findViewById(R.id.editText1);
+        
+        screen.setFocusable(false);
+        screen.setFocusableInTouchMode(false);
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "1");
+              setNumber(1);
             }
         });
 
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "2");
+                setNumber(2);
             }
         });
 
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "3");
+                setNumber(3);
             }
         });
 
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "4");
+                setNumber(4);
             }
         });
 
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "5");
+                setNumber(5);
             }
         });
 
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "6");
+                setNumber(6);
             }
         });
 
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "7");
+                setNumber(7);
             }
         });
 
         button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "8");
+                setNumber(8);
             }
         });
 
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "9");
+                setNumber(9);
             }
         });
 
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screen.setText(screen.getText() + "0");
+                setNumber(0);
             }
         });
 
@@ -127,65 +135,105 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                value1 = Double.parseDouble(screen.getText().toString());
-                calc = Calculation.ADDITION;
-                screen.setText("");
+              calculate(Calculation.ADDITION);
             }
         });
 
         buttonSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                value1 = Double.parseDouble(screen.getText().toString());
-                calc = Calculation.SUBTRACTION;
-                screen.setText("");
+                calculate(Calculation.SUBTRACTION);
             }
         });
 
         buttonMulti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                value1 = Double.parseDouble(screen.getText().toString());
-                calc = Calculation.MULTIPLICATION;
-                screen.setText("");
+                calculate(Calculation.MULTIPLICATION);
             }
         });
 
         buttonDiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                value1 = Double.parseDouble(screen.getText().toString());
-                calc = Calculation.DIVISION;
-                screen.setText("");
+                calculate(Calculation.DIVISION);
+            }
+        });
+
+        buttonMod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculate(Calculation.MODULO);
             }
         });
 
         buttonEqual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                value2 = Double.parseDouble(screen.getText().toString());
+                if(screen.getText().length() != 0 && calc != Calculation.ERROR) {
+                    value2 = Double.parseDouble(screen.getText().toString());
+                }
                 switch(calc) {
                     case ADDITION:
                         screen.setText(value1 + value2 + "");
-                        calc = null;
+                        calc = Calculation.NOTSELECTED;
                         break;
                     case SUBTRACTION:
                         screen.setText(value1 - value2 + "");
-                        calc = null;
+                        calc = Calculation.NOTSELECTED;
                         break;
                     case MULTIPLICATION:
                         screen.setText(value1 * value2 + "");
-                        calc = null;
+                        calc = Calculation.NOTSELECTED;
                         break;
                     case DIVISION:
-                        screen.setText(value1 / value2 + "");
-                        calc = null;
+                        if(value2 == 0) {
+                            screen.setText("Can't divide by zero");
+                            calc = Calculation.ERROR;
+                        } else {
+                            screen.setText(value1 / value2 + "");
+                            calc = Calculation.NOTSELECTED;
+                        }
+                        break;
+                    case MODULO:
+                        if(value2 == 0) {
+                            screen.setText("Can't divide by Zero");
+                            calc = Calculation.ERROR;
+                        } else {
+                            screen.setText(value1 % value2 + "");
+                            calc = Calculation.NOTSELECTED;
+                        }
+                        break;
+                    case NOTSELECTED:
+                    case ERROR:
+                        screen.setText("");
                         break;
                 }
             }
         });
+
     }
+
+    public void setNumber(int n) {
+        String s = String.valueOf(n);
+        if(calc == Calculation.ERROR) {
+            screen.setText(s);
+            calc = Calculation.NOTSELECTED;
+        } else {
+            screen.setText(screen.getText() + s);
+        }
+    }
+
+    public void calculate(Calculation calculation) {
+        if(screen.getText().length() != 0 && calc != Calculation.ERROR) {
+            value1 = Double.parseDouble(screen.getText().toString());
+        }
+        calc = calculation;
+        screen.setText("");
+    }
+
 }
