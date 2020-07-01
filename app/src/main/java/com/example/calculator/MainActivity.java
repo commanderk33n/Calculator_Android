@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     Calculation calc = Calculation.NOTSELECTED;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         screen = (EditText) findViewById(R.id.editText1);
-        
+
         screen.setFocusable(false);
         screen.setFocusableInTouchMode(false);
 
@@ -215,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public void setNumber(int n) {
@@ -235,5 +233,4 @@ public class MainActivity extends AppCompatActivity {
         calc = calculation;
         screen.setText("");
     }
-
 }
